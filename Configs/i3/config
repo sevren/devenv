@@ -7,7 +7,7 @@
 
 # i3 config file (v4)
 #
-# Please see https://i3wm.org/docs/userguide.html for a complete reference!
+# Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
 set $mod Mod4
 
@@ -36,7 +36,8 @@ bindsym $mod+Return exec i3-sensible-terminal
 bindsym $mod+Shift+q kill
 
 # start dmenu (a program launcher)
-# bindsym $mod+d exec dmenu_run
+#bindsym $mod+d exec dmenu_run
+#bindsym $mod+d exec rofi -show drun
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
@@ -92,6 +93,7 @@ bindsym $mod+a focus parent
 # focus the child container
 #bindsym $mod+d focus child
 
+
 # switch to workspace
 bindsym $mod+1 workspace 1
 bindsym $mod+2 workspace 2
@@ -123,6 +125,11 @@ bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
+#wallpaper
+exec --no-startup-id compton --xrender-sync-fence
+exec_always --no-startup-id feh --bg-scale ~/Downloads/img_summer.png
+
+
 # resize window (you can also use the mouse for that)
 mode "resize" {
         # These bindings trigger as soon as you enter the resize mode
@@ -131,15 +138,15 @@ mode "resize" {
         # Pressing right will grow the window’s width.
         # Pressing up will shrink the window’s height.
         # Pressing down will grow the window’s height.
-        bindsym j resize shrink width 10 px or 10 ppt
-        bindsym k resize grow height 10 px or 10 ppt
-        bindsym l resize shrink height 10 px or 10 ppt
-        bindsym semicolon resize grow width 10 px or 10 ppt
+       # bindsym j resize shrink width 10 px or 10 ppt
+       # bindsym k resize grow height 10 px or 10 ppt
+       # bindsym l resize shrink height 10 px or 10 ppt
+       # bindsym semicolon resize grow width 10 px or 10 ppt
 
         # same bindings, but for the arrow keys
         bindsym Left resize shrink width 10 px or 10 ppt
-        bindsym Down resize grow height 10 px or 10 ppt
-        bindsym Up resize shrink height 10 px or 10 ppt
+        bindsym Down resize shrink height 10 px or 10 ppt
+        bindsym Up resize grow height 10 px or 10 ppt
         bindsym Right resize grow width 10 px or 10 ppt
 
         # back to normal: Enter or Escape
@@ -151,16 +158,65 @@ bindsym $mod+r mode "resize"
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
+#bar {
+#        status_command i3status
+#}
+
+
 bar {
-        status_command i3status
-        position top
-        colors{
+    position top
+    status_command i3status
+    colors{
         background #232323
         statusline #DCDCDC
     }
-    font pango: Ubuntu Mono 11
+font pango: Ubuntu Mono 15
 }
 
-bindsym $mod+d exec --no-startup-id albert
-bindsym exec --no-startup-id nm-applet
-bindsym exec --no-startup-id blueman-applet
+
+bindsym $mod+l exec ~/.config/i3/lockme
+bindsym $mod+shift+s exec ~/.config/i3/lockme; exec systemctl suspend 
+
+# Pulse Audio controls
+#bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 5 +5% #increase sound volume
+#bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 5 -5% #decrease sound volume
+#bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 5 toggle # mute sound
+
+bindsym XF86AudioRaiseVolume exec amixer set -D pulse Master 5%+ #increase sound volume
+bindsym XF86AudioLowerVolume exec amixer -D pulse set Master 5%- #decrease sound volume
+bindsym XF86AudioMute exec amixer -D pulse set Master 1+ toggle # mute sound
+bindsym XF86AudioMicMute exec amixer -D pulse set Capture toggle # mute mic
+
+# Sreen brightness controls
+bindsym XF86MonBrightnessUp exec xbacklight -inc 20 # increase screen brightness
+bindsym XF86MonBrightnessDown exec xbacklight -dec 20 # decrease screen brightness
+
+# Touchpad controls
+bindsym XF86TouchpadToggle exec /some/path/toggletouchpad.sh # toggle touchpad
+
+# Media player controls
+bindsym XF86AudioPlay exec playerctl play
+bindsym XF86AudioPause exec playerctl pause
+bindsym XF86AudioNext exec playerctl next
+bindsym XF86AudioPrev exec playerctl previous
+
+#Webmail
+bindsym XF86Mail exec google-chrome https://outlook.office.com/owa/?realm=coesia.com&exsvurl=1&ll-cc=1033&modurl=0
+
+#Slack and Telegram
+#bindsym XF86Messenger  exec slack
+bindsym XF86Messenger exec slack; exec Telegram;
+
+#Youtube
+bindsym XF86AudioMedia exec google-chrome https://youtube.com
+
+exec gnome-terminal
+#exec chromium-browser
+exec_always feh --bg-fill ~/.config/i3/kali.png
+#exec_always start-pulseaudio-x11
+exec_always compton -f
+
+exec --no-startup-id xautolock -locker "~/.config/i3/lockme" -time 1 -detectsleep -notify 10
+exec --no-startup-id albert
+exec --no-startup-id nm-applet
+exec --no-startup-id volumeicon
